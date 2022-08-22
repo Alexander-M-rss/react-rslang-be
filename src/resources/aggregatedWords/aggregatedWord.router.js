@@ -27,12 +27,20 @@ router.get('/', async (req, res) => {
     perPage,
     filter
   );
+  words[0].paginatedResults = words[0].paginatedResults.map(word => {
+    const { _id, ...rest } = word;
+    return { id: _id, ...rest };
+  });
   res.status(OK).send(words);
 });
 
 router.get('/:wordId', validator(wordId, 'params'), async (req, res) => {
-  const word = await aggregatedWordsService.get(req.params.wordId, req.userId);
+  let word = await aggregatedWordsService.get(req.params.wordId, req.userId);
 
+  word = word.map(word => {
+    const { _id, ...rest } = word;
+    return { id: _id, ...rest };
+  });
   res.status(OK).send(word);
 });
 
